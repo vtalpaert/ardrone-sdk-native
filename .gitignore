@@ -1,2 +1,3 @@
 arsdk
 venv
+*.tar.gz

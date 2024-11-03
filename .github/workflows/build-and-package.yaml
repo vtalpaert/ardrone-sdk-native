@@ -1,0 +1,42 @@
+name: Build ARSKD into a tarball - ubuntu-22.04
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    env:
+      TAR_FILE: arsdk-native-samples-x64-master.tar.gz
+      TAR_CONTENT_DIR: out/arsdk-native/staging/
+    steps:
+      - name: Install dependencies
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: repo autoconf libavahi-client-dev libavcodec-dev libavformat-dev libswscale-dev
+          version: 1.0
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.7"
+      - name: repo
+        run: |
+          repo init -u https://github.com/Parrot-Developers/arsdk_manifests.git
+          repo sync
+      - name: Build SDK and samples
+        run: |
+          ./build.sh -p native -tt # list all tasks for native platform
+          ./build.sh -p native -t build-sdk -j 3
+          ./build.sh -p native -t build-sample-JumpingSumoSample -j 3
+          ./build.sh -p native -t build-sample-BebopSample -j 3
+      - name: Create tarball
+        run: find $TAR_CONTENT_DIR -printf "%P\n" | tar -cvzf $TAR_FILE --no-recursion -C $TAR_CONTENT_DIR -T -
+      - name: Release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          # artifactContentType: 
+          artifacts: ${{ TAR_FILE }}
+          bodyFile: "release_note.md"
+          name: arsdk3
