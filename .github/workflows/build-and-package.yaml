@@ -67,4 +67,3 @@ jobs:
           # artifactContentType: 
           artifacts: "*.tar.gz"
           bodyFile: "release_note.md"
-          name: arsdk3
