@@ -19,24 +19,52 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.7"
+      - name: Cache build
+        uses: actions/cache@v4
+        with:
+          key: sdk
+          path: |
+            arsdk
+            !arsdk/.repo
       - name: repo
         run: |
+          mkdir -p arsdk && cd arsdk
           repo init -u https://github.com/Parrot-Developers/arsdk_manifests.git
           repo sync
       - name: Build SDK and samples
         run: |
+          cd arsdk
           ./build.sh -p native -tt # list all tasks for native platform
           ./build.sh -p native -t build-sdk -j 3
           ./build.sh -p native -t build-sample-JumpingSumoSample -j 3
           ./build.sh -p native -t build-sample-BebopSample -j 3
+          cd ..
       - name: Create tarball
-        run: find $TAR_CONTENT_DIR -printf "%P\n" | tar -cvzf $TAR_FILE --no-recursion -C $TAR_CONTENT_DIR -T -
+        run: find arsdk/$TAR_CONTENT_DIR -printf "%P\n" | tar -cvzf $TAR_FILE --no-recursion -C arsdk/$TAR_CONTENT_DIR -T -
+      - name: Archive artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-content
+          path: |
+            *.tar.gz
+            release_note.md
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: write
+    steps:
+      - name: Get artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-content
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
           artifactErrorsFailBuild: true
           # artifactContentType: 
-          artifacts: ${{ TAR_FILE }}
+          artifacts: "*.tar.gz"
           bodyFile: "release_note.md"
           name: arsdk3
