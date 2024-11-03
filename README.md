@@ -1,7 +1,15 @@
 
 # ARDrone SDK
 
-Build a tarball of ARDroneSDK3 using https://github.com/Parrot-Developers/arsdk_manifests/
+Build ARDroneSDK3 using https://github.com/Parrot-Developers/arsdk_manifests/
+
+## Download the SDK
+
+The CI builds and saves the ARDroneSDK3 in the [Releases](https://github.com/vtalpaert/ardrone-sdk-native/releases)
+
+### Direct download links
+
+- [ARSDK 3.14.0 x64 native with samples](https://github.com/vtalpaert/ardrone-sdk-native/releases/download/arsdk-native-samples-x64-master/arsdk-native-samples-x64-master.tar.gz)
 
 ## Build SDK locally
 
