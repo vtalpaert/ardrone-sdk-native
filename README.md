@@ -25,6 +25,7 @@ Note that the build fails for python3.10 and requires to downgrade to python3.7.
 Several solutions are possible: in a docker image, using a third party apt repository for python3.7 or rebuilding using pyenv.
 
 Here is my solution using the third party ppa, which you should only use at your own risk.
+
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
@@ -64,4 +65,23 @@ TAR_DIR=arsdk/out/arsdk-native/staging/
 TAR_NAME=arsdk-native-samples-master.tar.gz
 find $TAR_DIR -printf "%P\n" | tar -cvzf $TAR_NAME --no-recursion -C $TAR_DIR -T -
 # Equivalent to tar cvzf arsdk-native-samples-master.tar.gz -C arsdk/out/arsdk-native/staging but without a ./ parent directory
+```
+
+## Test the SDK
+
+```bash
+sudo apt install xterm mplayer
+```
+
+```bash
+curl -L -o arsdk-native-samples.tar.gz https://github.com/vtalpaert/ardrone-sdk-native/releases/download/arsdk-native-samples-x64-master/arsdk-native-samples-x64-master.tar.gz
+mkdir -p arsdk-native-samples
+tar -xf arsdk-native-samples.tar.gz -C arsdk-native-samples
+rm arsdk-native-samples.tar.gz
+```
+
+```bash
+cd arsdk-native-samples/
+source native-wrapper.sh
+JumpingSumoSample
 ```
