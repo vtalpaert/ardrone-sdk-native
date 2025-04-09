@@ -40,7 +40,9 @@ jobs:
           ./build.sh -p native -t build-sample-BebopSample -j 3
           cd ..
       - name: Create tarball
-        run: find arsdk/$TAR_CONTENT_DIR -printf "%P\n" | tar -cvzf $TAR_FILE --no-recursion -C arsdk/$TAR_CONTENT_DIR -T -
+        run: |
+          cp parrot_license.md arsdk/$TAR_CONTENT_DIR
+          find arsdk/$TAR_CONTENT_DIR -printf "%P\n" | tar -cvzf $TAR_FILE --no-recursion -C arsdk/$TAR_CONTENT_DIR -T -
       - name: Archive artifact
         uses: actions/upload-artifact@v4
         with:

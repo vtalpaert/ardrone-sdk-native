@@ -63,6 +63,7 @@ cd .. # return above arsdk folder
 rm -r venv # if using venv
 TAR_DIR=arsdk/out/arsdk-native/staging/
 TAR_NAME=arsdk-native-samples-master.tar.gz
+cp parrot_license.md $TAR_DIR
 find $TAR_DIR -printf "%P\n" | tar -cvzf $TAR_NAME --no-recursion -C $TAR_DIR -T -
 # Equivalent to tar cvzf arsdk-native-samples-master.tar.gz -C arsdk/out/arsdk-native/staging but without a ./ parent directory
 ```
