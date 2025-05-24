@@ -22,10 +22,10 @@ jobs:
           packages: repo autoconf libavahi-client-dev libavcodec-dev libavformat-dev libswscale-dev
           version: 1.0
       - uses: actions/checkout@v4
-      - name: Set up Python 3.7
+      - name: Set up Python 3.8
         uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.8"
       - name: Cache build
         uses: actions/cache@v4
         with:
