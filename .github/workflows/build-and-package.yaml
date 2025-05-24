@@ -2,27 +2,34 @@ name: Build ARSKD into a tarball - ubuntu-22.04
 on: [push]
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            arch: x64
+          - os: ubuntu-22.04-arm
+            arch: arm64
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     env:
-      TAR_FILE: arsdk-native-samples-x64-master.tar.gz
+      TAR_FILE: arsdk-native-samples-${{ matrix.arch }}-master.tar.gz
       TAR_CONTENT_DIR: out/arsdk-native/staging/
     steps:
       - name: Install dependencies
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: repo autoconf libavahi-client-dev libavcodec-dev libavformat-dev libswscale-dev
-          version: 1.0
+          version: 1.0-${{ matrix.arch }}
       - uses: actions/checkout@v4
-      - name: Set up Python 3.7
+      - name: Set up Python 3.8
         uses: actions/setup-python@v5
         with:
-          python-version: "3.7"
+          python-version: "3.8"
       - name: Cache build
         uses: actions/cache@v4
         with:
-          key: sdk
+          key: sdk-${{ matrix.arch }}
           path: |
             arsdk
             !arsdk/.repo
@@ -46,21 +53,28 @@ jobs:
       - name: Archive artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release-content
+          name: release-content-${{ matrix.arch }}
           path: |
             *.tar.gz
             release_note.md
   release:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            arch: x64
+          - os: ubuntu-22.04-arm
+            arch: arm64
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     permissions:
       contents: write
     steps:
       - name: Get artifact
         uses: actions/download-artifact@v4
         with:
-          name: release-content
+          name: release-content-${{ matrix.arch }}
       - name: Release
         uses: ncipollo/release-action@v1
         with:
