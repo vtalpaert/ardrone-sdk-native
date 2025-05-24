@@ -58,23 +58,17 @@ jobs:
             *.tar.gz
             release_note.md
   release:
-    strategy:
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            arch: x64
-          - os: ubuntu-22.04-arm
-            arch: arm64
     needs: build
     if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     permissions:
       contents: write
     steps:
       - name: Get artifact
         uses: actions/download-artifact@v4
         with:
-          name: release-content-${{ matrix.arch }}
+          pattern: release-content-*
+          merge-multiple: true
       - name: Release
         uses: ncipollo/release-action@v1
         with:
