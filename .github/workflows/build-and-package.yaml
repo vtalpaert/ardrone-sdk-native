@@ -20,7 +20,7 @@ jobs:
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: repo autoconf libavahi-client-dev libavcodec-dev libavformat-dev libswscale-dev
-          version: 1.0
+          version: 1.0-${{ matrix.arch }}
       - uses: actions/checkout@v4
       - name: Set up Python 3.8
         uses: actions/setup-python@v5
