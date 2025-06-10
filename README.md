@@ -29,7 +29,7 @@ Here is my solution using the third party ppa, which you should only use at your
 ```bash
 sudo add-apt-repository ppa:deadsnakes/ppa
 sudo apt update
-sudo apt install python3-virtualenv python3.7
+sudo apt install -y python3-virtualenv python3.7
 virtualenv venv -p python3.7
 source venv/bin/activate
 ```

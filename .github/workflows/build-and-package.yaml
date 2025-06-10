@@ -41,10 +41,17 @@ jobs:
       - name: Build SDK and samples
         run: |
           cd arsdk
+          if [ "${{ matrix.arch }}" = "arm64" ]; then
+            echo "Building for ARM architecture"
+            export ARCH=arm64
+            export CFLAGS="-march=armv8-a"
+          fi
           ./build.sh -p native -tt # list all tasks for native platform
           ./build.sh -p native -t build-sdk -j 3
           ./build.sh -p native -t build-sample-JumpingSumoSample -j 3
           ./build.sh -p native -t build-sample-BebopSample -j 3
+          echo "Testing the produced .so file using objdump"
+          objdump -f ${TAR_CONTENT_DIR}usr/lib/libfutils.so
           cd ..
       - name: Create tarball
         run: |
